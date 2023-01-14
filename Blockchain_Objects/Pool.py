@@ -4,14 +4,18 @@ from datetime import datetime
 from Blockchain_Objects.ERC20 import ERC20Token
 
 class Avalanche_Pool:
-    def __init__(self, adrs:str, POOLABI_file:str="ABIs\ABI_Pangolin.json", ERC20ABI_file:str="ABIs\ER20_ABI.json",w3=Web3(Web3.HTTPProvider('https://api.avax.network/ext/bc/C/rpc'))):
+    def __init__(self, adrs:str, POOLABI_file:str="ABIs\ABI_Pangolin.json", ERC20ABI_file:str="ABIs\ABI_ERC20.json",rpc ='https://api.avax.network/ext/bc/C/rpc'):
         self.adress = adrs
         with open(POOLABI_file, 'r') as f: #ABI Pangolin works for TJOE too
             self.Pool_ABI = json.load(f)
-        self.w3=w3
+        self.w3=Web3(Web3.HTTPProvider(rpc))
         self.contract = self.w3.eth.contract(address=self.w3.toChecksumAddress(self.adress), abi=self.Pool_ABI)
-        self.pool_name = self.contract.functions.name().call()
-        self.pool_symbol = self.contract.functions.symbol().call()
+        try : 
+            self.pool_name = self.contract.functions.name().call()
+            self.pool_symbol = self.contract.functions.symbol().call()
+        except : 
+            self.pool_name = "Undefined"
+            self.pool_symbol = "Undefined"
         self.tokens = [ERC20Token(self.contract.functions.token0().call(), ERC20ABI_file,self.w3),ERC20Token(self.contract.functions.token1().call(), ERC20ABI_file,self.w3)]
         
     def printPoolinfos(self):
@@ -42,5 +46,8 @@ class Avalanche_Pool:
             price = (reserves[1-token_index]/10**self.tokens[1-token_index].decimals) / (reserves[token_index]/10**self.tokens[token_index].decimals)
             units = self.tokens[1-token_index].symbol
             return price, units, timestamp
-
+    def getTokenList(self):
+        return self.tokens
+    def getBalanceOf(self,adrss):
+        return (self.contract.functions.balanceOf(self.w3.toChecksumAddress(adrss)).call())
 
