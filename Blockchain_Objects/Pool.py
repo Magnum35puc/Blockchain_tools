@@ -1,10 +1,10 @@
 from web3 import Web3
 import json
 from datetime import datetime
-from ERC20 import ERC20Token
+from Blockchain_Objects.ERC20 import ERC20Token
 
 class Avalanche_Pool:
-    def __init__(self, adrs:str, POOLABI_file:str="ABI_Pangolin.json", ERC20ABI_file:str="ER20_ABI.json",w3=Web3(Web3.HTTPProvider('https://api.avax.network/ext/bc/C/rpc'))):
+    def __init__(self, adrs:str, POOLABI_file:str="ABIs\ABI_Pangolin.json", ERC20ABI_file:str="ABIs\ER20_ABI.json",w3=Web3(Web3.HTTPProvider('https://api.avax.network/ext/bc/C/rpc'))):
         self.adress = adrs
         with open(POOLABI_file, 'r') as f: #ABI Pangolin works for TJOE too
             self.Pool_ABI = json.load(f)

@@ -3,7 +3,7 @@ import json
 
 
 class ERC20Token :
-    def __init__(self, adrs:str,ERC20ABI_file:str="ER20_ABI.json",w3=Web3(Web3.HTTPProvider('https://api.avax.network/ext/bc/C/rpc'))):
+    def __init__(self, adrs:str,ERC20ABI_file:str="ABIs\ER20_ABI.json",w3=Web3(Web3.HTTPProvider('https://api.avax.network/ext/bc/C/rpc'))):
         with open(ERC20ABI_file) as erc20File:
             self.ERC20_ABI = json.load(erc20File)
         self.w3=w3
