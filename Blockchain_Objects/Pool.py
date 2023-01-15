@@ -48,6 +48,11 @@ class Avalanche_Pool:
             return price, units, timestamp
     def getTokenList(self):
         return self.tokens
+    def getTokenNames(self):
+        list = []
+        for token in self.tokens:
+            list.append(token.symbol)
+        return list
     def getBalanceOf(self,adrss):
         return (self.contract.functions.balanceOf(self.w3.toChecksumAddress(adrss)).call())
 
