@@ -2,8 +2,18 @@ from Blockchain_Objects.Pool import Avalanche_Pool
 from Blockchain_Objects.Wallet import Wallet
 from Blockchain_Objects.Blockchain import Blockchain
 from Blockchain_Objects.ERC20 import ERC20Token
+from Backtests.Datas.BinanceAPI import Binance_API_data
 from web3 import Web3
 from typing import List
+import pandas as pd
+from backtesting import Backtest
+from Backtests.Strategies.SMACross import SmaCross
+from Backtests.Strategies.RSIxSMA import RSIxSMA
+
+
+import shelve
+
+
 
 
 def getBestArbitrage(list_pool:List[Avalanche_Pool]):
@@ -38,10 +48,29 @@ def main():
     #print(Wallet_GateIO.getAllBalances())
     getBestArbitrage(list_pool)
 
-    
+def save_data(API,filename="data_binance"):
+    s = shelve.open(filename)
+    s['Dates']= [API.start,API.end]
+    s['data'] = API.full_data.to_json()
+    s.close()
 
 
+
+
+def main_bt():
+    #API = Binance_API_data(2021,2022)
+    #save_data(API)
+    s = shelve.open("data_binance")
+    data = pd.read_json(s['data'])
+    print(data)
+    bt = Backtest(data, RSIxSMA,
+                cash=100000, commission=.002,
+                exclusive_orders=True)
+
+    output = bt.run()
+    bt.plot()
+    print(output['_trades'])
 
 
 if __name__ == "__main__":
-    main()
+    main_bt()
