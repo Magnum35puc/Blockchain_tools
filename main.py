@@ -8,9 +8,9 @@ from typing import List
 import pandas as pd
 from backtesting import Backtest
 from Backtests.Strategies.SMACross import SmaCross
-from Backtests.Strategies.RSIxSMA import RSIxSMA
-
-
+from Backtests.Strategies.RSIxSMA import RSIxSMA 
+from Backtests.Strategies.RSI import RSI_S
+from Backtests.Strategies.Pct_Change import Pct_Change
 import shelve
 
 
@@ -63,7 +63,7 @@ def main_bt():
     s = shelve.open("data_binance")
     data = pd.read_json(s['data'])
     print(data)
-    bt = Backtest(data, RSIxSMA,
+    bt = Backtest(data, Pct_Change,
                 cash=100000, commission=.002,
                 exclusive_orders=True)
 

@@ -6,9 +6,10 @@ from Backtests.Strategies.RSI import RSI
 
 
 class RSIxSMA(Strategy):
-    d_rsi = 30  # Daily RSI lookback periods
+    d_rsi = 50  # Daily RSI lookback periods
     w_rsi = 30  # Weekly
-    level = 70
+    level_RSI_high = 75
+    level_RSI_low = 35
     
     def init(self):
         # Compute moving averages the strategy demands
@@ -32,8 +33,8 @@ class RSIxSMA(Strategy):
         # If we don't already have a position, and
         # if all conditions are satisfied, enter long.
         if (not self.position and
-            self.daily_rsi[-1] > self.level and
-            self.weekly_rsi[-1] > self.level and
+            self.daily_rsi[-1] > self.level_RSI_high and
+            self.weekly_rsi[-1] > self.level_RSI_high and
             self.weekly_rsi[-1] > self.daily_rsi[-1] and
             self.ma10[-1] > self.ma20[-1] > self.ma50[-1] > self.ma100[-1] and
             price > self.ma10[-1]):
@@ -44,5 +45,5 @@ class RSIxSMA(Strategy):
         
         # If the price closes 2% or more below 10-day MA
         # close the position, if any.
-        elif price < .98 * self.ma10[-1]:
+        elif price < .98 * self.ma10[-1] or self.weekly_rsi[-1] < self.level_RSI_low:
             self.sell()
